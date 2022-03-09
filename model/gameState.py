@@ -1,7 +1,7 @@
 
 from model.ball import Ball
 from dataclasses import dataclass
-
+import pygame as pg
 class GameState:
 
     WIDTH: int
@@ -12,6 +12,7 @@ class GameState:
     rects : list
     undrawed_rects: list
     height_of_all_blocks : int 
+    ball_acceralor: int =1
     
     def __init__(self,height_blocks:int,width_blocks:int,canvasWIDTH:int,canvasHEIGHT:int):
         self.height_blocks = height_blocks
@@ -37,10 +38,12 @@ class GameState:
                 print(self.rects[indx])
                 self.undrawed_rects.append(self.rects[indx])
                 self.rects.remove(self.rects[indx])
+                self.ball_acceralor +=1
                 break
             
                 
-    
+ 
+            
 
 @dataclass
 class Rectangles:
@@ -56,27 +59,28 @@ class Rectangles:
         self.height_block = height_block
         self.topX:int = self.x+self.width_block
         self.topY : int= self.y+self.height_block
+        self.rect = pg.Rect(self.x,self.y,self.width_block,self.height_block)
 
     def collides_to_rectangles(self,ball:Ball)->bool:
         if self.collides_to_bottom(ball)or self.collides_to_top(ball) or self.collides_to_left(ball) or self.collides_to_right(ball):
             return True
 
     def collides_to_top(self,ball:Ball)->bool:
-        if self.x <= ball.x < self.topX and self.y <= ball.y+ball.radius < self.topY:
+        if self.x <= ball.rect.x < self.topX and self.y <= ball.rect.y+ball.radius < self.topY:
             ball.change_richting_y()
             return True
     
     def collides_to_bottom(self,ball:Ball)->bool:
-        if self.x <= ball.x < self.topX and self.y <= ball.y-ball.radius < self.topY:
+        if self.x <= ball.rect.x < self.topX and self.y <= ball.rect.y-ball.radius < self.topY:
             ball.change_richting_y()
             return True
     
     def collides_to_left(self,ball:Ball)->bool:
-        if self.x <= ball.x+ball.radius < self.topX and self.y <= ball.y < self.topY:
+        if self.x <= ball.rect.x+ball.radius < self.topX and self.y <= ball.rect.y < self.topY:
             ball.change_richting_x()
             return True
 
     def collides_to_right(self,ball:Ball)->bool:
-        if self.x <= ball.x-ball.radius < self.topX and self.y <= ball.y < self.topY:
+        if self.x <= ball.rect.x-ball.radius < self.topX and self.y <= ball.rect.y < self.topY:
             ball.change_richting_x()
             return True
