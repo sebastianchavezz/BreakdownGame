@@ -1,6 +1,6 @@
 import pygame as pg
 from model.gameState import GameState
-from view import View
+from view.view import View
 from model.player import Player
 from model.ball import Ball
 
