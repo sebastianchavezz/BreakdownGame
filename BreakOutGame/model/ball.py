@@ -6,13 +6,15 @@ import pygame as pg
 class Ball:
     WIDTH: int
     HEIGHT : int
-    original_speed_y :int = -5
-    original_speed_x: int = -3
-    richting_x : int = original_speed_x
-    richting_y : int  = original_speed_y
+    original_speed_y :float = -2.5
+    original_speed_x: float= -1.5
+    richting_x : float = original_speed_x
+    richting_y : float  = original_speed_y
     radius :int = 20
     is_in_boost = False
     boost :int = 2
+    threshold :int =2
+    ball_in_game: bool= True
 
     def __init__(self,width:int,height:int,screen):
         self.WIDTH = width
@@ -34,7 +36,7 @@ class Ball:
     def check_collision_x(self):
         '''checks collition against the vertical walls'''
         if self.rect.right>= self.WIDTH:
-            self.rect.x = self.WIDTH-self.radius-1
+            self.rect.x = self.WIDTH-self.radius-self.threshold
             self.change_richting_x()
             if self.is_in_boost :
                 self.undo_boost()
@@ -43,7 +45,7 @@ class Ball:
                 print(f'after: {self.is_in_boost}')
             print(self.richting_x) 
         if self.rect.left  <= 0:
-            self.rect.x = 1 
+            self.rect.x = self.threshold 
             self.change_richting_x()
             if self.is_in_boost :
                 self.undo_boost()
@@ -55,7 +57,7 @@ class Ball:
     def check_collision_y(self):
         '''checks if ball collies against the walls or the players pallet'''
         if self.rect.top <=0 :
-            self.rect.x =1
+            self.rect.y =self.threshold
             self.change_richting_y()
 
     def change_richting_x(self):
@@ -66,8 +68,8 @@ class Ball:
 
     def ball_off_screen(self):
         if self.rect.y > self.HEIGHT:
-            self.rect.x = self.WIDTH//2
-            self.rect.y = self.HEIGHT//2
+            self.ball_in_game =False
+            
 
     def undo_boost(self):
         if self.richting_x>0:
@@ -78,7 +80,7 @@ class Ball:
     
     
     def accelerate_ball(self):
-        accelarate = 1
+        accelarate = 0.5
         self.accelerate_ball_x(accelarate)
         self.accelerate_ball_y(accelarate)
         

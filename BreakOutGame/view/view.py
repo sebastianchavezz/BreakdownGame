@@ -21,10 +21,12 @@ class View:
 
     def update_game_state(self,screen:pg.Surface,rectangles:list,color:tuple):
         """undraw the gamestate, wich are the blocks that need to be broken"""
-        color_change = 7
+        
+        if len(rectangles) ==0:
+            return
         for rec in rectangles:
             pg.draw.rect(surface=screen,color=color,rect=rec.rect)
-        color_change+= 1 
+        
 
     
 

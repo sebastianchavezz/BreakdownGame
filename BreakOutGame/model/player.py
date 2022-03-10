@@ -4,7 +4,7 @@ class Player:
     WIDTH: int
     HEIGHT:int
     
-    moving_distance: int = 5
+    moving_distance: float = 4.5
     pallet_thickness:int = 5
     moving_left : bool
     moving_right : bool
@@ -48,6 +48,7 @@ class Player:
 
     def check_collision_top_of_paddle(self,ball):
         if self.paddle.colliderect(ball.rect):
+            ball.rect.y = self.paddle.y-ball.radius-ball.threshold
             if (ball.richting_x >0 and self.moving_left) or (ball.richting_x <0 and self.moving_right):
                 ball.change_richting_x()
                 ball.ball_boost()
