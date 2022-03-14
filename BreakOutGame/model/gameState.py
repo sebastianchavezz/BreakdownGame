@@ -13,6 +13,8 @@ class GameState:
     undrawed_rects: list
     height_of_all_blocks : int 
     ball_acceralor: int =1
+    rects_in_game = True
+
     
     def __init__(self,height_blocks:int,width_blocks:int,canvasWIDTH:int,canvasHEIGHT:int):
         self.height_blocks = height_blocks
@@ -24,7 +26,8 @@ class GameState:
         self.undrawed_rects  = []
         print(self.height_blocks)
         self.add_rectangles()
-
+        self.score :int =0
+        self.collide : bool = False
     def add_rectangles(self):
         '''Add the data of all rectangles in a list of OBJECTS, easy to acces'''
         for y in range(self.begin_height,self.height_of_all_blocks,self.height_blocks):
@@ -36,17 +39,24 @@ class GameState:
         for indx in range(len(self.rects)-1,-1,-1):
             if self.rects[indx].collides_to_rectangles(ball):
                 print(self.rects[indx])
-                print(f'second undraw= {len(self.undrawed_rects)}')
+                
                 self.undrawed_rects.append(self.rects[indx])
-                print(f'first undraw= {len(self.undrawed_rects)}')
+                
                 self.rects.remove(self.rects[indx])
+                
                 self.ball_acceralor +=1
+                self.score +=1
+                self.collide = True
                 break
             
                 
     def clear_undraw(self):
         self.undrawed_rects = []
-        
+    
+    def check_game_done(self):
+        if len(self.rects)==0:
+            return False
+        return True
             
 
 @dataclass
@@ -77,10 +87,6 @@ class Rectangles:
     
     def collides_to_bottom(self,ball)->bool:
         if self.x <= ball.rect.x+ball.radius//2 < self.topX and self.y <= ball.rect.y - ball.threshold < self.topY:
-            print(f'rect: topX={self.topX}, topY={self.topY}')
-            print(f'rect:  top={self.rect.top}, x={self.rect.x}, bottom={self.rect.bottom}, y={self.rect.y}, left={self.rect.left}, right={self.rect.right}')
-            print(f'ball:  top={ball.rect.top}, x={ball.rect.x}, bottom={ball.rect.bottom}, y={ball.rect.y}, left={ball.rect.left}, right={ball.rect.right}')
-            print(type(ball.rect.x))
             ball.change_richting_y()
             return True
     

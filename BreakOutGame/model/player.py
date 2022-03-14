@@ -8,8 +8,10 @@ class Player:
     pallet_thickness:int = 5
     moving_left : bool
     moving_right : bool
+    
 
     def __init__(self,width:int,height:int,lenght_pallet:int):
+        self.player_hit :int =0
         self.WIDTH = width
         self.HEIGHT = height
         self.x_begin = self.WIDTH //2
@@ -21,7 +23,7 @@ class Player:
         self.topY = self.paddle.y + self.pallet_thickness
 
         
-        
+        self.paddle_touch_without_scoring =0
     def move_left(self)->None:
         '''changes the data'''
         if(self.check_collision_wall_left()): 
@@ -48,6 +50,9 @@ class Player:
 
     def check_collision_top_of_paddle(self,ball):
         if self.paddle.colliderect(ball.rect):
+            self.player_hit +=1
+            self.paddle_touch_without_scoring +=1
+            print(self.paddle_touch_without_scoring)
             ball.rect.y = self.paddle.y-ball.radius-ball.threshold
             if (ball.richting_x >0 and self.moving_left) or (ball.richting_x <0 and self.moving_right):
                 ball.change_richting_x()
@@ -58,3 +63,6 @@ class Player:
 
     def get_paddle(self):
         return self.paddle
+
+    def undo_paddle_touch_without_scoring(self):
+        self.paddle_touch_without_scoring =0

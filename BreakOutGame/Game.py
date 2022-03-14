@@ -3,28 +3,36 @@ from .model.gameState import GameState
 from .view.view import View
 from .model.player import Player
 from .model.ball import Ball
+from dataclasses import dataclass
+
 pg.init()
 
+@dataclass
 class GameData:
-    pass
+    players_hit :int
+    score: int
+
+    
 
 class Game:
     _widthBlock = 50
     _heightBlock = 30
+    player_hit: int
+    score: int
     
     def __init__(self,window,window_width,window_height):
         self.screen = window
         self.WIDTH = window_width
         self.HEIGHT = window_height
-        self.screen = pg.display.set_mode((self.WIDTH,self.HEIGHT))
+        
         self.view = View(self.WIDTH,self.HEIGHT,self._widthBlock,self._heightBlock)
         self.game_rectangles = GameState(self._heightBlock,self._widthBlock,self.WIDTH,self.HEIGHT)
         self.player = Player(self.WIDTH,self.HEIGHT,self._widthBlock)
         self.ball = Ball(self.WIDTH,self.HEIGHT,self.screen)
 
         self.running =True
-
-
+        self.paddle_hits = 0
+        self.score =0
     
     def move_pallet(self,left:bool):
         '''True moving left, False moving right'''
@@ -39,7 +47,7 @@ class Game:
         self.player.move_right()
         
 
-    def update_screen(self):
+    def update_screen(self,show_screen=True):
         self.view.undraw(self.screen,self.ball.rect)
         self.ball.update_ball()
         self.player.check_collision_ball(self.ball)
@@ -61,6 +69,16 @@ class Game:
         self.player.moving_left = False
         self.player.moving_right = False
 
+        
 
     def is_ball_in_Game(self)->bool:
         return self.ball.ball_in_game
+
+    
+    def infinity_loop(self):
+        if self.game_rectangles.collide:
+            self.player.undo_paddle_touch_without_scoring()
+            self.game_rectangles.collide = False
+        if self.player.paddle_touch_without_scoring == 10:
+            return False
+        return True
